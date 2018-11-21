@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "robot.h"
-#include "robot.cpp"
 #include <iostream>
 #include <string>
 #include <tuple>
@@ -14,9 +13,14 @@ using namespace std;
 
 class game {
 
-	 map<string, robot> robots;
+	map<string, robot> robots;
 
 public:
+
+	game() {
+
+	}
+
 	int num_robots() const {
 		return robots.size();
 	}
@@ -31,12 +35,16 @@ public:
 			switch (dir) {
 			case 0:
 				robots.find(name)->second.move_north();
+				break;	
 			case 1:
 				robots.find(name)->second.move_east();
+				break;
 			case 2:
 				robots.find(name)->second.move_south();
+				break;
 			case 3:
 				robots.find(name)->second.move_west();
+				break;
 			}
 
 		}
@@ -44,12 +52,16 @@ public:
 			switch (dir) {
 			case 0:
 				robots.find(name)->second.move_north();
+				break;
 			case 1:
 				robots.find(name)->second.move_east();
+				break;
 			case 2:
 				robots.find(name)->second.move_south();
+				break;
 			case 3:
 				robots.find(name)->second.move_west();
+				break;
 			}
 
 		}
@@ -57,8 +69,10 @@ public:
 
 	int num_close() const {
 		int count = 0;
-		for (map<string, robot>::iterator it = robots.begin; it != robots.end(); ++it ) {
-			if (robot::distance(it->second) <= 10) {
+		typedef map<string, robot>::const_iterator iter;
+		for (iter r = robots.cbegin(); r != robots.cend(); ++r ) {
+			robot* robotinstance = new robot();
+			if (robotinstance->distance(r->second) <= 10) {
 				count++;
 			}
 		}
@@ -67,11 +81,13 @@ public:
 
 	int max_distance() const {
 		int max = 0;
-		for (const auto& robot_pair : robots) {
+		typedef map<string, robot>::const_iterator iter;
+		for (iter r = robots.cbegin(); r != robots.cend(); ++r) {
 			robot rob("name");
 			rob.distance(rob);
-			if (distance(robot_pair) > max) {
-				max = distance(robot_pair);
+			robot* robotInstance = new robot();
+			if (robotInstance->distance(r->second) > max) {
+				max = robotInstance->distance(r->second);
 			}
 		}
 		return max;
@@ -80,24 +96,34 @@ public:
 	string furthest() const {
 		int max = 0;
 		string name;
-		for (const auto& robot_pair : robots) {
-			if (distance(robot_pair) > max) {
-				max = distance(robot_pair);
-				name = robot_pair.second.name;
+		robot* robotInstance = new robot();
+		typedef map<string, robot>::const_iterator iter;
+		for (iter r = robots.cbegin(); r != robots.cend(); ++r) {
+			if (robotInstance->distance(r->second) > max) {
+				max = robotInstance->distance(r->second);
+				name = r->first;
 			}
 		}
 		return name;
 	}
+	
+	struct pred {
+		inline bool operator() (robot& rob1, robot& rob2)
+		{
+			
+			return rob1.travelled() > rob2.travelled();
+		}
+	};
 
 	vector<robot> robots_by_travelled() const {
 		vector<robot> robotsList = vector<robot>();
-		for (const auto& robot_pair : robots) {
-			robotsList.push_back(robot_pair.second);
+		robot* robotInstance = new robot();
+		typedef map<string, robot>::const_iterator iter;
+		for (iter r = robots.cbegin(); r != robots.cend(); ++r) {
+			robotsList.push_back(r->second);
 		}
-		sort(robotsList.begin(), robotsList.end(), [](const robot& lhs, const robot& rhs) {
-			return distance(lhs) < distance(rhs);
-		
-		});
-
+		sort(robotsList.begin(), robotsList.end(), pred());
+		return robotsList;
 	}
+	
 };

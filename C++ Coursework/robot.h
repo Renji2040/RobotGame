@@ -18,6 +18,8 @@ public:
 
 	explicit robot(const std::string &n);
 
+	explicit robot();
+
 	void move_north();
 
 	void move_east();
@@ -35,10 +37,6 @@ public:
 	int travelled() const;
 	
 	int distance(const robot& r);
-
-	int &positionX() { return x; };
-
-	int &positionY() { return y; };
 
 	int &travelledDistance() { return _travelled; };
 

@@ -17,6 +17,9 @@ robot::robot(const string &n) {
 	_travelled = 0;
 
 }
+robot::robot() {
+
+}
 
 
 
@@ -49,11 +52,12 @@ robot::robot(const string &n) {
 		}
 
 		int robot::travelled() const {
-			return travelled();
+			return _travelled;
 		}
 
-		int robot::distance(const robot& r) {
-			return abs(x) + abs(y);
+	    int robot::distance(const robot& r) {
+		
+			return abs(r.x) + abs(r.y);
 		}
 		
 
